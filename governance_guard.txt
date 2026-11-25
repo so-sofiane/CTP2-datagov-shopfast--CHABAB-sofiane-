@@ -1,0 +1,5 @@
+The missing guard at ShopFast was a test (with a data 
+contract behind it): nothing checked the range or the 
+mean of the amounts, so when the payment team switched 
+from euros to cents, every value was still valid and the 
+batch loaded silently, 100x too big.
