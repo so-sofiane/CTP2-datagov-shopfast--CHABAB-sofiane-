@@ -1,0 +1,19 @@
+dimension,rule_in_plain_words,column,how_you_measured_it,failing_rows,total_rows,score_pct,severity_high_medium_low,who_should_fix_owner_steward_custodian
+Completeness,email is filled,email,df.email.isna().sum(),48,1241,96.1,Medium,Steward
+Completeness,phone is filled,phone,df.phone.isna().sum(),30,1241,97.6,Low,Owner
+Uniqueness,customer_id is unique,customer_id,duplicated(keep=False),16,1241,98.7,High,Custodian
+Uniqueness,one person registers only once (same email),email,strip + lower then duplicated(keep=False),120,1241,90.3,Medium,Owner
+Validity,email has a valid format,email,regex ^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$,28,1241,97.7,Medium,Steward
+Validity,loyalty_tier is bronze silver gold or platinum,loyalty_tier,isin(allowed list),13,1241,99.0,Low,Steward
+Validity,French postal code has 5 digits,postal_code,regex ^\d{5}$ on French customers,48,1241,96.1,Low,Steward
+Consistency,country uses one ISO code (FR DE BE ES),country,value_counts: rows not in FR/DE/BE/ES (NaN excluded),299,1241,75.9,Medium,Custodian
+Consistency,signup_date is written YYYY-MM-DD,signup_date,regex ^\d{4}-\d{2}-\d{2}$,303,1241,75.6,Medium,Custodian
+Accuracy,birth date is not in the future or before 1906,birth_date,to_datetime then compare with today and 1906-01-01,8,1241,99.4,Medium,Steward
+
+
+Uniqueness,order_id is unique (critical: stop the load),order_id,GX ExpectColumnValuesToBeUnique,14,5207,99.7,High,Custodian
+Consistency,every order's customer exists in customers (orphans: quarantine rows),customer_id,GX ExpectColumnValuesToBeInSet(customers.customer_id),14,5207,99.7,High,Steward
+Completeness,order_date is filled (load + log it),order_date,GX ExpectColumnValuesToNotBeNull,11,5207,99.8,Medium,Steward
+Accuracy,no order dated in the future (load + log it),order_date_dt,GX ExpectColumnValuesToBeBetween(max=today),5,5207,99.9,Medium,Custodian
+Validity,status in the 5 agreed values (fix case in transform),status,GX ExpectColumnValuesToBeInSet,9,5207,99.8,Medium,Steward
+Accuracy,total_amount_eur > 0 and < 10000 (money: stop the load),total_amount_eur,GX ExpectColumnValuesToBeBetween(0;10000),6,5207,99.9,High,Owner
