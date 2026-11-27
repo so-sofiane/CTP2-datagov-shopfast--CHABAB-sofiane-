@@ -1,0 +1,16 @@
+table,column,business_meaning,data_type,unit_or_format,allowed_values_or_range,nullable_Y_N,example_value,personal_data_Y_N,classification,owner,source_system
+stg_orders,order_id,"Unique identifier of one order (one purchase).",INTEGER,"integer ID","unique, >= 700000",N,700008,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,customer_id,"Customer account that placed the order (links to stg_customers).",INTEGER,"integer ID","must exist in stg_customers",N,10377,Y,confidential,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,order_date,"Date the order was placed.",DATE,YYYY-MM-DD,"not in the future",N,2026-10-20,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,status,"Current state of the order in its lifecycle.",VARCHAR,lower-case text,"pending, shipped, delivered, cancelled, returned",N,delivered,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,channel,"Sales channel where the order was placed.",VARCHAR,lower-case text,"web, mobile_app, marketplace",N,mobile_app,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,shipping_country,"Country the order is delivered to.",VARCHAR,ISO-2 country code,"FR, DE, ES, BE",Y,FR,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_orders,total_amount_eur,"Total price of the order as invoiced to the customer, VAT and shipping included.",DECIMAL,"EUR, 2 decimals (euros, not cents)","> 0; observed max 1400.79",N,59.90,N,internal,Sara Martin (Head of Sales),ShopFast e-commerce platform (orders DB)
+stg_payments,payment_id,"Unique identifier of one payment transaction.",INTEGER,"integer ID","unique, >= 900000",N,900001,N,internal,Head of Finance,Payment service provider export
+stg_payments,order_id,"Order this payment pays for (links to stg_orders).",INTEGER,"integer ID","must exist in stg_orders",N,700002,N,internal,Head of Finance,Payment service provider export
+stg_payments,payment_date,"Date the payment was made.",DATE,YYYY-MM-DD,"on or after the order_date",N,2026-10-08,N,internal,Head of Finance,Payment service provider export
+stg_payments,method,"Payment method chosen by the customer.",VARCHAR,lower-case text,"card, apple_pay, bank_transfer, paypal",N,apple_pay,N,internal,Head of Finance,Payment service provider export
+stg_payments,amount,"Amount paid by the customer in this payment, VAT included.",DECIMAL,"EUROS with 2 decimals - NOT cents","> 0; observed 13.70 to 1400.79",N,217.38,N,confidential,Head of Finance,Payment service provider export
+stg_payments,currency,"Currency of the amount.",VARCHAR,ISO-4217 code,EUR only,N,EUR,N,internal,Head of Finance,Payment service provider export
+stg_payments,card_last4,"Last 4 digits of the payment card (only for card payments).",VARCHAR,"4 digits, kept as text","0000-9999, empty if not a card",Y,9997,Y,restricted,Head of Finance,Payment service provider export
+stg_payments,payment_status,"Result of the payment transaction: money received, or paid back to the customer.",VARCHAR,lower-case text,"captured, refunded",N,captured,N,internal,Head of Finance,Payment service provider export
